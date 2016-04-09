@@ -155,6 +155,51 @@ function updateBoard() {
     };
 }
 
+function bingo() {
+    // TODO: Do something cool
+    console.log("BINGO!");
+    var msg = new SpeechSynthesisUtterance('Bingo!');
+        window.speechSynthesis.speak(msg);
+}
+
+function checkBoard() {
+    // For now, just check for any five in a row bingos
+
+    // Check columns
+
+    for (var j = 0; j < 5; j++) {
+        if (marks[0][j] && marks[1][j] &&
+            marks[2][j] && marks[3][j] &&
+            marks[4][j]) {
+            bingo();
+        }
+    }
+
+    // Check rows
+
+    for (var i = 0; i < 5; i++) {
+        if (marks[i][0] && marks[i][1] &&
+            marks[i][2] && marks[i][3] &&
+            marks[i][4]) {
+            bingo();
+        }
+    }
+
+    // Check the diagonals
+
+    if (marks[0][0] && marks[1][1] &&
+        marks[2][2] && marks[3][3] &&
+        marks[4][4]) {
+        bingo();
+    }
+
+    if (marks[0][4] && marks[1][3] &&
+        marks[2][2] && marks[3][1] &&
+        marks[4][0]) {
+        bingo();
+    }
+}
+
 
 function handleB(num) {
     console.log("B" + num);
@@ -166,7 +211,8 @@ function handleB(num) {
     B.splice(i,1);
     var rows = $("#board tr");
     $(rows[i+1].children[0]).addClass("marked");
-    marks[i,0] = true;
+    marks[i][0] = true;
+    checkBoard();
 }
 function handleI(num) {
     console.log("I" + num);
@@ -178,7 +224,8 @@ function handleI(num) {
     I.splice(i,1);
     var rows = $("#board tr");
     $(rows[i+1].children[1]).addClass("marked");
-    marks[i,1] = true;
+    marks[i][1] = true;
+    checkBoard();
 }
 function handleN(num) {
     console.log("N" + num);
@@ -190,7 +237,8 @@ function handleN(num) {
     N.splice(i,1);
     var rows = $("#board tr");
     $(rows[i + 1 + (i > 1 ? 1 : 0)].children[2]).addClass("marked");
-    marks[i + (i > 1 ? 1 : 0),2] = true;
+    marks[i + (i > 1 ? 1 : 0)][2] = true;
+    checkBoard();
 }
 function handleG(num) {
     console.log("G" + num);
@@ -202,7 +250,8 @@ function handleG(num) {
     G.splice(i,1);
     var rows = $("#board tr");
     $(rows[i+1].children[3]).addClass("marked");
-    marks[i,3] = true;
+    marks[i][3] = true;
+    checkBoard();
 }
 function handleO(num) {
     console.log("O" + num);
@@ -214,7 +263,8 @@ function handleO(num) {
     O.splice(i,1);
     var rows = $("#board tr");
     $(rows[i+1].children[4]).addClass("marked");
-    marks[i,4] = true;
+    marks[i][4] = true;
+    checkBoard();
 }
 
 
@@ -224,25 +274,26 @@ if (annyang) {
   // Let's define our first command. First the text we expect, and then the function it should call
   var commands = {
     'Be *num': handleB,
+    'B-*num': handleB,
     'B *num': handleB,
     'B*num': handleB,
-    'B-*num': handleB,
     'Eye *num': handleI,
+    'I-*num': handleI,
     'I *num': handleI,
     'I*num': handleI,
-    'I-*num': handleI,
     'En *num': handleN,
+    'and *num': handleN,
+    'n-*num': handleN,
     'n *num': handleN,
     'n*num': handleN,
-    'n-*num': handleN,
     'Gee *num': handleG,
+    'G-*num': handleG,
     'G *num': handleG,
     'G*num': handleG,
-    'G-*num': handleG,
     'Oh *num': handleO,
+    'O-*num': handleO,
     'O *num': handleO,
     'O*num': handleO,
-    'O-*num': handleO,
   };
 
   // Add our commands to annyang
