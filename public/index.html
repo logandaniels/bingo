@@ -47,23 +47,24 @@
         }
         #div-img, #cropped-image {
             /*background-color: #f7f7f7;*/
-            max-height:50vmin;
-            max-width:50vmin;
+            max-height:70vmin;
+            max-width:70vmin;
             float:right;
-            width:60vw;
+            /*width:60vw;*/
         }
 
-        img.transitions {
+        img {
             max-width: 100%;
+            max-height: 100%;
             
             opacity: 1;
-            transition: all 1s;
-            -webkit-transition: all 1s;
+            transition: opacity 1s;
+            /*-webkit-transition: all 1s;*/
         }
 
         img.transitions.processed {
-            max-width:50vmin;
-            max-height:50vmin;
+            max-width: 100%;
+            max-height: 100%;
             opacity: .5;
         }
 
@@ -106,7 +107,7 @@
         </div>
 
         <div id="div-img">
-            <img src="images/cropped.jpg" id="bingo"  />
+            <img src="images/cropped.jpg" id="upload"  />
         </div>
 
         <div id="cropped-image"></div>

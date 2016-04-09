@@ -22,7 +22,19 @@ function handleFiles(files) {
     reader.onload = (function(aImg) {
         return function(e) {
             aImg.src = e.target.result; 
-            processBoardImage(aImg);
+            aImg.setAttribute("id", "upload");
+            $('#upload').cropper({
+              crop: function(e) {
+                // Output the result data for cropping image.
+                // console.log("MEEP");
+                // console.log(e.x);
+                // console.log(e.y);
+                // console.log(e.width);
+                // console.log(e.height);
+                // console.log(e.rotate);
+                // console.log(e.scaleX);
+                // console.log(e.scaleY);
+              }});
         };
     })(img);
     reader.readAsDataURL(file);
@@ -48,9 +60,16 @@ function processBoardImage(img) {
     console.log("OCRAD");
     console.log(string);    
 
+    // Remove everything that's not a digit or a newline, then split by newlines
     string = string.replace(/[^\d\n]+/g, "").replace(/ /g, "");
     var lines = string.split("\n");
     console.log(lines);
+
+    B = [];
+    I = [];
+    N = [];
+    G = [];
+    O = [];
 
     for (var i = 0; i < 5; i++) {
         var s = lines[i];
@@ -135,9 +154,6 @@ function updateBoard() {
         td.innerHTML = O[i];
     };
 }
-
-var img = document.getElementById("bingo");
-processBoardImage(img);
 
 
 function handleB(num) {
@@ -248,20 +264,26 @@ if (annyang) {
 function acceptCrop() {
     console.log("Accepting crop");
 
-    var canvas = $("#bingo").cropper('getCroppedCanvas');
+    var canvas = $("#upload").cropper('getCroppedCanvas');
     var dataURL = canvas.toDataURL();
     var croppedImg = document.createElement("img");
     croppedImg.src = dataURL;
     croppedImg.classList.add("transitions");
+    croppedImg.setAttribute("id", "bingo");
 
     var cropContainer = document.getElementById("cropped-image");
     cropContainer.innerHTML = "";
     cropContainer.appendChild(croppedImg);
+
+    processBoardImage(croppedImg);
 }
 
+// var img = document.getElementById("bingo");
+// processBoardImage(img);
 
-$('#bingo').cropper({
-  crop: function(e) {
+
+$('#upload').cropper({
+  upload: function(e) {
     // Output the result data for cropping image.
     // console.log("MEEP");
     // console.log(e.x);
