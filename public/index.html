@@ -15,12 +15,43 @@
         img {
             image-orientation: from-image;
         }
+        table {
+            border-collapse: collapse;
+            border-spacing: 0
+        }
+        td {
+            border:1px solid #CCC;
+            padding: 15px;
+        }
+        td.marked {
+            background: #CCC;
+        }
         </style>
     </head>
     <body>
 
+        <table id="board">
+            <tr>
+                <th>B</th><th>I</th><th>N</th><th>G</th><th>O</th>
+            </tr>
+            <tr>
+                <td>B0</td><td>I0</td><td>N0</td><td>G0</td><td>O0</td>
+            </tr>
+            <tr>
+                <td>B1</td><td>I1</td><td>N1</td><td>G1</td><td>O1</td>
+            </tr>
+            <tr>
+                <td>B2</td><td>I2</td><td>N2</td><td>G2</td><td>O2</td>
+            </tr>
+            <tr>
+                <td>B3</td><td>I3</td><td>N3</td><td>G3</td><td>O3</td>
+            </tr>
+            <tr>
+                <td>B4</td><td>I4</td><td>N4</td><td>G4</td><td>O4</td>
+            </tr>
+        </table>
 
-        <p>Hello world! This is HTML5 Boilerplate.</p>
+        <br />
 
         <img src="images/cropped.jpg" id="bingo" />
 
@@ -89,6 +120,46 @@
             }
         };
 
+        var marks = [[false, false, false, false, false],
+                        [false, false, false, false, false],
+                        [false, false, true, false, false],
+                        [false, false, false, false, false],
+                        [false, false, false, false, false]
+                    ];
+
+        var rows = $("#board tr");
+        for (var i = 0; i < B.length; i++) {
+            console.log(i);
+            var tr = rows[i+1];
+            var td = tr.children[0];
+            td.innerHTML = B[i];
+        };
+        for (var i = 0; i < I.length; i++) {
+            console.log(i);
+            var tr = rows[i+1];
+            var td = tr.children[1];
+            td.innerHTML = I[i];
+        };
+        for (var i = 0; i < N.length; i++) {
+            console.log(i);
+            var tr = rows[i+1 + (i > 1 ? 1 : 0)];
+            var td = tr.children[2];
+            td.innerHTML = N[i];
+        };
+        rows[3].children[2].innerHTML = "★";
+        for (var i = 0; i < G.length; i++) {
+            console.log(i);
+            var tr = rows[i+1];
+            var td = tr.children[3];
+            td.innerHTML = G[i];
+        };
+        for (var i = 0; i < O.length; i++) {
+            console.log(i);
+            var tr = rows[i+1];
+            var td = tr.children[4];
+            td.innerHTML = O[i];
+        };
+
         console.log(B);
         console.log(I);
         console.log(N);
@@ -97,18 +168,54 @@
 
         function handleB(num) {
             console.log("B" + num);
+            var i = B.indexOf(num);
+            if (i == -1) {
+                return;
+            }
+            console.log("That's a mark!");
+            B.splice(i,1);
+            $(rows[i+1].children[0]).addClass("marked");
+            marks[i,0] = true;
         }
         function handleI(num) {
             console.log("I" + num);
+            var i = I.indexOf(num);
+            if (i == -1) {
+                return;
+            }
+            console.log("That's a mark!");
+            I.splice(i,1);
+            marks[i,1] = true;
         }
         function handleN(num) {
             console.log("N" + num);
+            var i = N.indexOf(num);
+            if (i == -1) {
+                return;
+            }
+            console.log("That's a mark!");
+            N.splice(i,1);
+            marks[i,2] = true;
         }
         function handleG(num) {
             console.log("G" + num);
+            var i = G.indexOf(num);
+            if (i == -1) {
+                return;
+            }
+            console.log("That's a mark!");
+            G.splice(i,1);
+            marks[i,3] = true;
         }
         function handleO(num) {
             console.log("O" + num);
+            var i = O.indexOf(num);
+            if (i == -1) {
+                return;
+            }
+            console.log("That's a mark!");
+            O.splice(i,1);
+            marks[i,4] = true;
         }
 
 
