@@ -10,6 +10,7 @@
 
         <link rel="stylesheet" href="css/normalize.css">
         <link rel="stylesheet" href="css/main.css">
+        <link  href="css/cropper.css" rel="stylesheet">
 
         <style>
         img {
@@ -17,7 +18,9 @@
         }
         table {
             border-collapse: collapse;
-            border-spacing: 0
+            border-spacing: 0;
+            height: 50vmin;
+            width: 50vmin;
         }
         td {
             border:1px solid #CCC;
@@ -26,10 +29,60 @@
         td.marked {
             background: #CCC;
         }
+
+        #main {
+        }
+
+        #main, #div-input {
+            display:flex;
+        }
+
+        #div-file {
+            display:block;
+        }
+
+        #div-board {
+            display:inline;
+            /*float:left;*/
+        }
+        #div-img, #cropped-image {
+            /*background-color: #f7f7f7;*/
+            max-height:50vmin;
+            max-width:50vmin;
+            float:right;
+            width:60vw;
+        }
+
+        img.transitions {
+            max-width: 100%;
+            
+            opacity: 1;
+            transition: all 1s;
+            -webkit-transition: all 1s;
+        }
+
+        img.transitions.processed {
+            max-width:50vmin;
+            max-height:50vmin;
+            opacity: .5;
+        }
+
+
         </style>
+
+        <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+        <!-- <script src="http://tenso.rs/tesseract.js"></script> -->
+        <script src="//cdnjs.cloudflare.com/ajax/libs/SpeechKITT/0.3.0/speechkitt.min.js"></script>
+        <script src="js/ocrad.js"></script>
+        <script src="js/annyang.js"></script>
+        <script src="js/cropper.js"></script>
     </head>
     <body>
+    <div id="main">
 
+
+
+        <div id="div-board">
         <table id="board">
             <tr>
                 <th>B</th><th>I</th><th>N</th><th>G</th><th>O</th>
@@ -41,7 +94,7 @@
                 <td>B1</td><td>I1</td><td>N1</td><td>G1</td><td>O1</td>
             </tr>
             <tr>
-                <td>B2</td><td>I2</td><td>N2</td><td>G2</td><td>O2</td>
+                <td>B2</td><td>I2</td><td class="marked">★</td><td>G2</td><td>O2</td>
             </tr>
             <tr>
                 <td>B3</td><td>I3</td><td>N3</td><td>G3</td><td>O3</td>
@@ -50,219 +103,24 @@
                 <td>B4</td><td>I4</td><td>N4</td><td>G4</td><td>O4</td>
             </tr>
         </table>
+        </div>
 
-        <br />
+        <div id="div-img">
+            <img src="images/cropped.jpg" id="bingo"  />
+        </div>
 
-        <img src="images/cropped.jpg" id="bingo" />
+        <div id="cropped-image"></div>
 
-        <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
-        <!-- <script src="http://tenso.rs/tesseract.js"></script> -->
-        <script src="//cdnjs.cloudflare.com/ajax/libs/SpeechKITT/0.3.0/speechkitt.min.js"></script>
-        <script src="js/ocrad.js"></script>
-        <script src="js/annyang.js"></script>
-
-        <script>
-
-        var img = document.getElementById("bingo");
-
-        // Tesseract.recognize(img, function(err, res) {
-        //     console.log("Tesseract");
-        //     console.log(res["text"]);
-        // });
-
-        var string = OCRAD(img);
-        console.log("OCRAD");
-        console.log(string);
-
-        string = string.replace(/[^\d\n]+/g, "").replace(/ /g, "");
-        var lines = string.split("\n");
-        console.log(lines);
-
-        var B = [];
-        var I = [];
-        var N = [];
-        var G = [];
-        var O = [];
-
-        for (var i = 0; i < 5; i++) {
-            var s = lines[i];
-            if (i == 2) {
-                // Special third row with free space
-                if (s.length == 8) {
-                    // Double-digit B column
-                    B.push(s.slice(0,2));
-                    I.push(s.slice(2,4));
-                    G.push(s.slice(4,6));
-                    O.push(s.slice(6,8));
-                } else {
-                    // Single-digit B column
-                    B.push(s.slice(0,1));
-                    I.push(s.slice(1,3));
-                    G.push(s.slice(3,5));
-                    O.push(s.slice(5,7));
-                }
-            } else {
-                if (s.length == 10) {
-                    // Double-digit B column
-                    B.push(s.slice(0,2));
-                    I.push(s.slice(2,4));
-                    N.push(s.slice(4,6));
-                    G.push(s.slice(6,8));
-                    O.push(s.slice(8,10));
-                } else {
-                    // Single-digit B column
-                    B.push(s.slice(0,1));
-                    I.push(s.slice(1,3));
-                    N.push(s.slice(3,5));
-                    G.push(s.slice(5,7));
-                    O.push(s.slice(7,9));
-                }
-            }
-        };
-
-        var marks = [[false, false, false, false, false],
-                        [false, false, false, false, false],
-                        [false, false, true, false, false],
-                        [false, false, false, false, false],
-                        [false, false, false, false, false]
-                    ];
-
-        var rows = $("#board tr");
-        for (var i = 0; i < B.length; i++) {
-            console.log(i);
-            var tr = rows[i+1];
-            var td = tr.children[0];
-            td.innerHTML = B[i];
-        };
-        for (var i = 0; i < I.length; i++) {
-            console.log(i);
-            var tr = rows[i+1];
-            var td = tr.children[1];
-            td.innerHTML = I[i];
-        };
-        for (var i = 0; i < N.length; i++) {
-            console.log(i);
-            var tr = rows[i+1 + (i > 1 ? 1 : 0)];
-            var td = tr.children[2];
-            td.innerHTML = N[i];
-        };
-        rows[3].children[2].innerHTML = "★";
-        for (var i = 0; i < G.length; i++) {
-            console.log(i);
-            var tr = rows[i+1];
-            var td = tr.children[3];
-            td.innerHTML = G[i];
-        };
-        for (var i = 0; i < O.length; i++) {
-            console.log(i);
-            var tr = rows[i+1];
-            var td = tr.children[4];
-            td.innerHTML = O[i];
-        };
-
-        console.log(B);
-        console.log(I);
-        console.log(N);
-        console.log(G);
-        console.log(O);
-
-        function handleB(num) {
-            console.log("B" + num);
-            var i = B.indexOf(num);
-            if (i == -1) {
-                return;
-            }
-            console.log("That's a mark!");
-            B.splice(i,1);
-            $(rows[i+1].children[0]).addClass("marked");
-            marks[i,0] = true;
-        }
-        function handleI(num) {
-            console.log("I" + num);
-            var i = I.indexOf(num);
-            if (i == -1) {
-                return;
-            }
-            console.log("That's a mark!");
-            I.splice(i,1);
-            marks[i,1] = true;
-        }
-        function handleN(num) {
-            console.log("N" + num);
-            var i = N.indexOf(num);
-            if (i == -1) {
-                return;
-            }
-            console.log("That's a mark!");
-            N.splice(i,1);
-            marks[i,2] = true;
-        }
-        function handleG(num) {
-            console.log("G" + num);
-            var i = G.indexOf(num);
-            if (i == -1) {
-                return;
-            }
-            console.log("That's a mark!");
-            G.splice(i,1);
-            marks[i,3] = true;
-        }
-        function handleO(num) {
-            console.log("O" + num);
-            var i = O.indexOf(num);
-            if (i == -1) {
-                return;
-            }
-            console.log("That's a mark!");
-            O.splice(i,1);
-            marks[i,4] = true;
-        }
+    </div>
 
 
-        if (annyang) {
-            annyang.debug();
+    <div id="div-input">
+        <input type="file" id="input" onchange="handleFiles(this.files)"  />
 
-          // Let's define our first command. First the text we expect, and then the function it should call
-          var commands = {
-            'Be *num': handleB,
-            'B *num': handleB,
-            'B*num': handleB,
-            'B-*num': handleB,
-            'Eye *num': handleI,
-            'I *num': handleI,
-            'I*num': handleI,
-            'I-*num': handleI,
-            'En *num': handleN,
-            'n *num': handleN,
-            'n*num': handleN,
-            'n-*num': handleN,
-            'Gee *num': handleG,
-            'G *num': handleG,
-            'G*num': handleG,
-            'G-*num': handleG,
-            'Oh *num': handleO,
-            'O *num': handleO,
-            'O*num': handleO,
-            'O-*num': handleO,
-          };
+        <button id="accept-crop-button" onclick="acceptCrop()">Accept crop</button>
+    </div>
 
-          // Add our commands to annyang
-          annyang.addCommands(commands);
-
-          // Start listening. You can call this here, or attach this call to an event, button, etc.
-          // annyang.start();
-
-          // Tell KITT to use annyang
-          SpeechKITT.annyang();
-
-          // Define a stylesheet for KITT to use
-          SpeechKITT.setStylesheet('//cdnjs.cloudflare.com/ajax/libs/SpeechKITT/0.3.0/themes/flat.css');
-
-          // Render KITT's interface
-          SpeechKITT.vroom();
-        }
-
-        </script>
+        <script src="js/main.js"></script> 
 
     </body>
 </html>
