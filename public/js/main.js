@@ -14,7 +14,7 @@ function handleFiles(files) {
     img.classList.add("obj");
     img.file = file;
 
-    var imgcontainer = document.getElementById("div-img");
+    var imgcontainer = document.getElementById("div-upload-img");
     imgcontainer.innerHTML = "";
     imgcontainer.appendChild(img);
 
@@ -26,7 +26,6 @@ function handleFiles(files) {
             $('#upload').cropper({
               crop: function(e) {
                 // Output the result data for cropping image.
-                // console.log("MEEP");
                 // console.log(e.x);
                 // console.log(e.y);
                 // console.log(e.width);
@@ -53,6 +52,30 @@ var marks = [[false, false, false, false, false],
                 [false, false, false, false, false],
                 [false, false, false, false, false]
             ];
+
+function resetBoard() {
+    marks = [[false, false, false, false, false],
+                [false, false, false, false, false],
+                [false, false, true, false, false],
+                [false, false, false, false, false],
+                [false, false, false, false, false]
+            ];    
+
+    var img = $("#bingo");
+
+    B = Bfresh.slice();
+    I = Ifresh.slice();
+    N = Nfresh.slice();
+    G = Gfresh.slice();
+    O = Ofresh.slice();
+
+    var tds = document.getElementsByTagName("td");
+    for (var i = 0; i < tds.length; i++) {
+        if (tds[i].id != "free-space") {
+            tds[i].className = "";
+        }
+    }
+}
 
 
 function processBoardImage(img) {
@@ -106,6 +129,13 @@ function processBoardImage(img) {
             }
         }
     }
+
+    Bfresh = B.slice();
+    Ifresh = I.slice();
+    Nfresh = N.slice();
+    Gfresh = G.slice();
+    Ofresh = O.slice();
+
     console.log(B);
     console.log(I);
     console.log(N);
@@ -159,7 +189,7 @@ function bingo() {
     // TODO: Do something cool
     console.log("BINGO!");
     var msg = new SpeechSynthesisUtterance('Bingo!');
-        window.speechSynthesis.speak(msg);
+    window.speechSynthesis.speak(msg);
 }
 
 function checkBoard() {
@@ -208,20 +238,22 @@ function handleB(num) {
         return;
     }
     console.log("That's a mark!");
-    B.splice(i,1);
     var rows = $("#board tr");
     $(rows[i+1].children[0]).addClass("marked");
     marks[i][0] = true;
     checkBoard();
 }
 function handleI(num) {
+    if (parseInt(num) > 59) {
+        handleO(num);
+        return;
+    }
     console.log("I" + num);
     var i = I.indexOf(num);
     if (i == -1) {
         return;
     }
     console.log("That's a mark!");
-    I.splice(i,1);
     var rows = $("#board tr");
     $(rows[i+1].children[1]).addClass("marked");
     marks[i][1] = true;
@@ -234,7 +266,6 @@ function handleN(num) {
         return;
     }
     console.log("That's a mark!");
-    N.splice(i,1);
     var rows = $("#board tr");
     $(rows[i + 1 + (i > 1 ? 1 : 0)].children[2]).addClass("marked");
     marks[i + (i > 1 ? 1 : 0)][2] = true;
@@ -247,7 +278,6 @@ function handleG(num) {
         return;
     }
     console.log("That's a mark!");
-    G.splice(i,1);
     var rows = $("#board tr");
     $(rows[i+1].children[3]).addClass("marked");
     marks[i][3] = true;
@@ -260,7 +290,6 @@ function handleO(num) {
         return;
     }
     console.log("That's a mark!");
-    O.splice(i,1);
     var rows = $("#board tr");
     $(rows[i+1].children[4]).addClass("marked");
     marks[i][4] = true;
@@ -290,7 +319,13 @@ if (annyang) {
     'G-*num': handleG,
     'G *num': handleG,
     'G*num': handleG,
+    // G sounds like d
+    'Dee *num': handleG,
+    'D-*num': handleG,
+    'D *num': handleG,
+    'D*num': handleG,
     'Oh *num': handleO,
+    'Or *num': handleO,
     'O-*num': handleO,
     'O *num': handleO,
     'O*num': handleO,
@@ -304,6 +339,8 @@ if (annyang) {
 
   // Tell KITT to use annyang
   SpeechKITT.annyang();
+  SpeechKITT.setToggleLabelText("Start listening");
+  SpeechKITT.setInstructionsText("Listening for Bingo calls...");
 
   // Define a stylesheet for KITT to use
   SpeechKITT.setStylesheet('//cdnjs.cloudflare.com/ajax/libs/SpeechKITT/0.3.0/themes/flat.css');

@@ -3,38 +3,49 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title>Bingo </title>
+        <title>Bingo!</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
 
-        <link rel="stylesheet" href="css/normalize.css">
-        <link rel="stylesheet" href="css/main.css">
+        <!-- <link rel="stylesheet" href="css/normalize.css"> -->
+        <!-- <link rel="stylesheet" href="css/main.css"> -->
         <link  href="css/cropper.css" rel="stylesheet">
 
         <style>
-        img {
-            image-orientation: from-image;
-        }
         table {
             border-collapse: collapse;
             border-spacing: 0;
-            height: 50vmin;
-            width: 50vmin;
+            height: 80vmin;
+            width: 80vmin;
         }
         td {
             border:1px solid #CCC;
             padding: 15px;
+            font-size: 8vmin;
+        }
+        th {
+            font-size: 8vmin;
         }
         td.marked {
             background: #CCC;
         }
 
-        #main {
+        #container {
+            display:flex;
+            /*height:100vh;*/
+            /*align-items: center;*/
+            /*justify-content: center;*/
         }
 
-        #main, #div-input {
-            display:flex;
+        #container div {
+            /*padding:10px;*/
+            /*width:60%;*/
+            /*text-align: center;   */
+        }
+
+        #div-input {
+            text-align: center;
         }
 
         #div-file {
@@ -42,20 +53,37 @@
         }
 
         #div-board {
-            display:inline;
-            /*float:left;*/
+            margin-right:20vw;
+            text-align:center;
+/*            display:inline;
+*/            /*float:left;*/
         }
-        #div-img, #cropped-image {
-            /*background-color: #f7f7f7;*/
-            max-height:70vmin;
-            max-width:70vmin;
-            float:right;
-            /*width:60vw;*/
+        #div-upload, {
+
+            /*flex: 1;*/
+            /*height: 10vh;*/
+            /*max-width: 100%;*/
+            text-align: center;
+        }
+        img {
+            max-width:100%;
+            max-height:100%;
+        }
+        #div-upload-img {
+            margin-top: 5vh;
+            text-align: center;
+            max-height:80%;
+            max-width:80%;
+        }
+
+        #cropped-image {
+            max-height:80%;
+            max-width:80%;
         }
 
         img {
-            max-width: 100%;
-            max-height: 100%;
+/*            max-width: 100%;
+*/            /*max-height: 100%;*/
             
             opacity: 1;
             transition: opacity 1s;
@@ -63,8 +91,8 @@
         }
 
         img.transitions.processed {
-            max-width: 100%;
-            max-height: 100%;
+/*            max-width: 100%;
+*/            /*max-height: 100%;*/
             opacity: .5;
         }
 
@@ -79,47 +107,47 @@
         <script src="js/cropper.js"></script>
     </head>
     <body>
-    <div id="main">
-
-
-
+    <div id="container">
         <div id="div-board">
-        <table id="board">
-            <tr>
-                <th>B</th><th>I</th><th>N</th><th>G</th><th>O</th>
-            </tr>
-            <tr>
-                <td>B0</td><td>I0</td><td>N0</td><td>G0</td><td>O0</td>
-            </tr>
-            <tr>
-                <td>B1</td><td>I1</td><td>N1</td><td>G1</td><td>O1</td>
-            </tr>
-            <tr>
-                <td>B2</td><td>I2</td><td class="marked">★</td><td>G2</td><td>O2</td>
-            </tr>
-            <tr>
-                <td>B3</td><td>I3</td><td>N3</td><td>G3</td><td>O3</td>
-            </tr>
-            <tr>
-                <td>B4</td><td>I4</td><td>N4</td><td>G4</td><td>O4</td>
-            </tr>
-        </table>
+            <table id="board">
+                <tr>
+                    <th>B</th><th>I</th><th>N</th><th>G</th><th>O</th>
+                </tr>
+                <tr>
+                    <td>B0</td><td>I0</td><td>N0</td><td>G0</td><td>O0</td>
+                </tr>
+                <tr>
+                    <td>B1</td><td>I1</td><td>N1</td><td>G1</td><td>O1</td>
+                </tr>
+                <tr>
+                    <td>B2</td><td>I2</td><td id="free-space" class="marked">★</td><td>G2</td><td>O2</td>
+                </tr>
+                <tr>
+                    <td>B3</td><td>I3</td><td>N3</td><td>G3</td><td>O3</td>
+                </tr>
+                <tr>
+                    <td>B4</td><td>I4</td><td>N4</td><td>G4</td><td>O4</td>
+                </tr>
+            </table>
+
+            <button style="text-align:right" id="reset-board-button" onclick="resetBoard()">Reset board</button>
         </div>
 
-        <div id="div-img">
-            <img src="images/cropped.jpg" id="upload"  />
+        <div id="div-upload">
+            <div id="div-upload-img">
+                <img src="images/cropped.jpg" id="upload"  />
+            </div>
+            <div id="div-input">
+                <input type="file" id="input" onchange="handleFiles(this.files)"  />
+                <button id="accept-crop-button" onclick="acceptCrop()">Accept crop</button>
+            </div>
+            <div id="cropped-image"></div>
+
         </div>
-
-        <div id="cropped-image"></div>
-
     </div>
 
 
-    <div id="div-input">
-        <input type="file" id="input" onchange="handleFiles(this.files)"  />
 
-        <button id="accept-crop-button" onclick="acceptCrop()">Accept crop</button>
-    </div>
 
         <script src="js/main.js"></script> 
 
