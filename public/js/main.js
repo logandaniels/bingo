@@ -181,10 +181,10 @@ function updateBoard() {
 }
 
 function bingo() {
-    // TODO: Do something cool
     console.log("BINGO!");
     var msg = new SpeechSynthesisUtterance('Bingo!');
     window.speechSynthesis.speak(msg);
+    $.get("./sms");
 }
 
 function checkBoard() {
