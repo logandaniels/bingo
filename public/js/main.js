@@ -74,7 +74,7 @@ function resetBoard() {
 
 
 function processBoardImage(img) {
-    var string = OCRAD(img);
+    var string = OCRAD(img, {numeric: true});
     console.log("OCRAD");
     console.log(string);    
 
