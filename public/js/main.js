@@ -1,8 +1,3 @@
-// Tesseract.recognize(img, function(err, res) {
-//     console.log("Tesseract");
-//     console.log(res["text"]);
-// });
-
 function handleFiles(files) {
     var file = files[0];
     var imageType = /^image\//;
@@ -195,43 +190,100 @@ function bingo() {
 function checkBoard() {
     // For now, just check for any five in a row bingos
 
-    // Check columns
+    var rows = $("#board tr");
+    for (var i = 0; i < B.length; i++) {
+        var tr = rows[i+1];
+        var td = tr.children[0];
+        td.innerHTML = B[i];
+    };
+    for (var i = 0; i < I.length; i++) {
+        var tr = rows[i+1];
+        var td = tr.children[1];
+        td.innerHTML = I[i];
+    };
+    for (var i = 0; i < N.length; i++) {
+        var tr = rows[i+1 + (i > 1 ? 1 : 0)];
+        var td = tr.children[2];
+        td.innerHTML = N[i];
+    };
+    rows[3].children[2].innerHTML = "★";
+    for (var i = 0; i < G.length; i++) {
+        var tr = rows[i+1];
+        var td = tr.children[3];
+        td.innerHTML = G[i];
+    };
+    for (var i = 0; i < O.length; i++) {
+        var tr = rows[i+1];
+        var td = tr.children[4];
+        td.innerHTML = O[i];
+    };
 
+    // Check columns
     for (var j = 0; j < 5; j++) {
         if (marks[0][j] && marks[1][j] &&
             marks[2][j] && marks[3][j] &&
             marks[4][j]) {
+
+            $(rows[1].children[j]).removeClass("marked").addClass("bingo");
+            $(rows[2].children[j]).removeClass("marked").addClass("bingo");
+            $(rows[3].children[j]).removeClass("marked").addClass("bingo");
+            $(rows[4].children[j]).removeClass("marked").addClass("bingo");
+            $(rows[5].children[j]).removeClass("marked").addClass("bingo");
+
             bingo();
         }
     }
 
     // Check rows
-
     for (var i = 0; i < 5; i++) {
         if (marks[i][0] && marks[i][1] &&
             marks[i][2] && marks[i][3] &&
             marks[i][4]) {
+
+            $(rows[i+1].children[0]).removeClass("marked").addClass("bingo");
+            $(rows[i+1].children[1]).removeClass("marked").addClass("bingo");
+            $(rows[i+1].children[2]).removeClass("marked").addClass("bingo");
+            $(rows[i+1].children[3]).removeClass("marked").addClass("bingo");
+            $(rows[i+1].children[4]).removeClass("marked").addClass("bingo");
+
             bingo();
         }
     }
 
     // Check the diagonals
-
     if (marks[0][0] && marks[1][1] &&
         marks[2][2] && marks[3][3] &&
         marks[4][4]) {
+
+        $(rows[1].children[0]).removeClass("marked").addClass("bingo");
+        $(rows[2].children[1]).removeClass("marked").addClass("bingo");
+        $(rows[3].children[2]).removeClass("marked").addClass("bingo");
+        $(rows[4].children[3]).removeClass("marked").addClass("bingo");
+        $(rows[5].children[4]).removeClass("marked").addClass("bingo");
+
         bingo();
     }
 
     if (marks[0][4] && marks[1][3] &&
         marks[2][2] && marks[3][1] &&
         marks[4][0]) {
+
+        $(rows[1].children[4]).removeClass("marked").addClass("bingo");
+        $(rows[2].children[3]).removeClass("marked").addClass("bingo");
+        $(rows[3].children[2]).removeClass("marked").addClass("bingo");
+        $(rows[4].children[1]).removeClass("marked").addClass("bingo");
+        $(rows[5].children[0]).removeClass("marked").addClass("bingo");
+
         bingo();
     }
 }
 
 
 function handleB(num) {
+    if (parseInt(num) > 30) {
+        handleG(num);
+        return;
+    }
     console.log("B" + num);
     var i = B.indexOf(num);
     if (i == -1) {
@@ -272,6 +324,10 @@ function handleN(num) {
     checkBoard();
 }
 function handleG(num) {
+    if (parseInt(num) < 40) {
+        handleB(num);
+        return;
+    }
     console.log("G" + num);
     var i = G.indexOf(num);
     if (i == -1) {
@@ -366,20 +422,5 @@ function acceptCrop() {
     processBoardImage(croppedImg);
 }
 
-// var img = document.getElementById("bingo");
-// processBoardImage(img);
 
-
-$('#upload').cropper({
-  upload: function(e) {
-    // Output the result data for cropping image.
-    // console.log("MEEP");
-    // console.log(e.x);
-    // console.log(e.y);
-    // console.log(e.width);
-    // console.log(e.height);
-    // console.log(e.rotate);
-    // console.log(e.scaleX);
-    // console.log(e.scaleY);
-  }
-});
+$('#upload').cropper({ upload: function(e) {} });
