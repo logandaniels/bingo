@@ -1,5 +1,7 @@
 # Bingo!: An automatic bingo player
 
+[Click here to watch the demo!](https://www.youtube.com/watch?v=xAVjrJYamLQ)
+
 To run the app, first clone the repository and run ``npm install``. Then start the server with the command ``npm run start`` and navigate to ``localhost:3000`` in Google Chrome (other browsers will not work, as the site depends on Chrome's speech recognition API). Play Bingo!
 
 Made at CarlHacks 2016. The Devpost submission page is reproduced below.
